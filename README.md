@@ -5,4 +5,4 @@
 | Rosidah Darman | 5025231307 | Grafika Komputer B |
 
 
-<img width="1758" height="917" alt="Screenshot 2025-11-23 213139" src="https://github.com/user-attachments/assets/86b70952-fa9d-4548-b836-d0c23cbb3803" />
+<img width="1734" height="926" alt="Screenshot 2025-11-23 213539" src="https://github.com/user-attachments/assets/a223f975-f85c-442b-b823-3d06eb7fba5f" />
