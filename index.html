@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGL 3D Viewer - R, O & 7</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="hero-section">
+        <h1>WebGL 3D Viewer</h1>
+        <p>Interactive 3D Letters R, O & 7 with Phong Lighting</p>
+    </div>
+
+    <div class="main-container">
+        <div class="viewer-wrapper">
+            <div class="canvas-section">
+                <canvas id="myCanvas" width="950" height="600">
+                    Your browser doesn't support HTML5 Canvas
+                </canvas>
+            </div>
+
+            <div class="control-panel">
+                <div class="panel-card">
+                    <h3>Light Control</h3>
+                    <div class="light-controls">
+                        <button class="light-preset-btn active" onclick="setLightPreset(1)">
+                            Preset 1: Front Right
+                        </button>
+                        <button class="light-preset-btn" onclick="setLightPreset(2)">
+                            Preset 2: Front Left
+                        </button>
+                        <button class="light-preset-btn" onclick="setLightPreset(3)">
+                            Preset 3: Top Center
+                        </button>
+                    </div>
+                    <div class="light-info-display">
+                        <div class="light-coord">
+                            <span class="label">X:</span>
+                            <span id="lightPosX">2.0</span>
+                        </div>
+                        <div class="light-coord">
+                            <span class="label">Y:</span>
+                            <span id="lightPosY">2.0</span>
+                        </div>
+                        <div class="light-coord">
+                            <span class="label">Z:</span>
+                            <span id="lightPosZ">3.0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h3>Controls</h3>
+                    <div class="control-item">
+                        <span class="control-text">Click to pause/resume</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="control-text">Hold SPACE to pause</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="control-text">Scroll to zoom in or out</span>
+                    </div>
+                    <div class="control-item">
+                        <span class="control-text">Keys 1-3 for lights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>5025231307 - Rosidah Darman | Computer Graphics - B</p>
+        </div>
+    </div>
+
+    <script id="vertexShaderCode" type="x-shader/x-vertex">
+        attribute vec3 aPosition;
+        attribute vec3 aColor;
+        attribute vec3 aNormal;
+        varying vec3 vPosition;
+        varying vec3 vColor;
+        varying vec3 vNormal;
+        uniform mat4 uProjection;
+        uniform mat4 uView;
+        uniform mat4 uModel;
+        void main() {
+            gl_Position = uProjection * uView * uModel * vec4(aPosition, 1.0);
+            vPosition = (uModel * vec4(aPosition, 1.0)).xyz;
+            vColor = aColor;
+            vNormal = aNormal;
+        }
+    </script>
+
+    <script id="fragmentShaderCode" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec3 vPosition;
+        varying vec3 vColor;
+        varying vec3 vNormal;
+        uniform vec3 uAmbientColor;
+        uniform float uAmbientIntensity;
+        uniform vec3 uDiffuseColor;
+        uniform vec3 uDiffusePosition;
+        uniform mat3 uNormalMatrix;
+        uniform vec3 uViewerPosition;
+
+        void main() {
+            vec3 worldNormal = normalize(uNormalMatrix * vNormal);
+            vec3 lightDir = normalize(uDiffusePosition - vPosition);
+            vec3 ambient = uAmbientColor * uAmbientIntensity * vColor;
+            float diff = max(dot(worldNormal, lightDir), 0.0);
+            vec3 diffuse = diff * uDiffuseColor * vColor;
+
+            if (diff > 0.3) {
+                diffuse = diffuse * 1.2;
+            } else if (diff < 0.1) {
+                diffuse = diffuse * 0.7;
+            }
+
+            vec3 result = ambient + diffuse;
+            gl_FragColor = vec4(result, 1.0);
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="data.js"></script>
+    <script src="helper.js"></script>
+    <script src="IOHandler.js"></script>
+    <script src="main.js"></script>
+    <script src="gl-matrix-min.js"></script>
+</body>
+</html>
